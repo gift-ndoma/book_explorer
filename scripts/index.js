@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function fetchQuotes() {
-    const response = await fetch('https://zenquotes.io/api/quotes');
+    const response = await fetch('https://api.allorigins.win/raw?url=https://zenquotes.io/api/quotes');
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
     const quotes = await response.json();
-    console.log(quotes);
+    console.log('Fetched data:', quotes);
     displayTwoQuotes(quotes);
 }
 
@@ -29,7 +29,7 @@ async function displayTwoQuotes(quotes) {
     } catch (error) {
         console.error('Error displaying quotes:', error);
         const quotesContainer = document.getElementById('quotes-section');
-        quotesContainer.innerHTML = '<p>Error loading quotes. Please try again later.</p>';
+        quotesContainer.innerHTML = `<p>Error loading quotes. Please try again later.</p>`;
     }
 }
 
@@ -37,15 +37,15 @@ function displayQuotes(quotes) {
     const quotesContainer = document.getElementById('quotes-section');
     quotesContainer.innerHTML = ''; // Clear previous quotes
     
-    if (!quotesContainer) { // Fixed: was "container", now "quotesContainer"
+    if (!quotesContainer) { 
         console.error('Quotes container not found');
         return;
     }
     
     quotes.forEach(quote => {
         const quoteElement = document.createElement('div');
-        quoteElement.className = 'quote';
-        quoteElement.innerHTML = `<p>"${quote.q}"</p><p>- <b>${quote.a}</b></p>`; // Fixed: closed bold tag
+        quoteElement.className = 'quote-container';
+        quoteElement.innerHTML = `<p>"${quote.q}"</p><br><p>- <b>${quote.a}</b></p>`; // Fixed: closed bold tag
         quotesContainer.appendChild(quoteElement);
     });
 }
