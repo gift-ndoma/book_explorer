@@ -1,0 +1,54 @@
+{
+  "books": [
+    {
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "image": "images/to-kill-a-mockingbird.jpg"
+    },
+    {
+      "title": "1984",
+      "author": "George Orwell",
+      "image": "images/1984.jpg"
+    },
+    {
+      "title": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "image": "images/pride-and-prejudice.jpg"
+    },
+    {
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "image": "images/great-gatsby.jpg"
+    },
+    {
+      "title": "Moby Dick",
+      "author": "Herman Melville",
+      "image": "images/moby-dick.jpg"
+    },
+    {
+      "title": "War and Peace",
+      "author": "Leo Tolstoy",
+      "image": "images/war-and-peace.jpg"
+    },
+    {
+      "title": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "image": "images/catcher-in-the-rye.jpg"
+    },
+    {
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "image": "images/the-hobbit.jpg"
+    },
+    {
+      "title": "Crime and Punishment",
+      "author": "Fyodor Dostoevsky",
+      "image": "images/crime-and-punishment.jpg"
+    },
+    {
+      "title": "Jane Eyre",
+      "author": "Charlotte Brontë",
+      "image": "images/jane-eyre.jpg"
+    }
+  ]
+}
