@@ -1,3 +1,6 @@
+
+// fetch quotes from ZenQuotes API and display two random quotes
+// using All Origins to bypass CORS issues
 document.addEventListener('DOMContentLoaded', () => {
     fetchQuotes();
 });
@@ -8,7 +11,6 @@ async function fetchQuotes() {
         throw new Error('Network response was not ok');
     }
     const quotes = await response.json();
-    console.log('Fetched data:', quotes);
     displayTwoQuotes(quotes);
 }
 
@@ -45,7 +47,141 @@ function displayQuotes(quotes) {
     quotes.forEach(quote => {
         const quoteElement = document.createElement('div');
         quoteElement.className = 'quote-container';
-        quoteElement.innerHTML = `<p>"${quote.q}"</p><br><p>- <b>${quote.a}</b></p>`; // Fixed: closed bold tag
+        quoteElement.innerHTML = `<p>"${quote.q}"</p><br><p>- <b>${quote.a}</b></p>`; 
         quotesContainer.appendChild(quoteElement);
     });
+};
+
+
+// Fetch and display books from Google Books API
+
+const url = `https://www.googleapis.com/books/v1/volumes?`
+const serchButton = document.getElementById('search-button');
+
+// Load saved search results when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadSavedSearchResults();
+});
+
+function getBooks() {
+    const searchQuery = document.getElementById('search-input').value;
+    const urlWithQuery = `${url}q=${encodeURIComponent(searchQuery)}`;
+
+    fetch(urlWithQuery)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            displayBooks(data.items);
+        })
+        .catch(error => {
+            console.error('Error fetching books:', error);
+            const booksContainer = document.getElementById('book-list');
+            booksContainer.innerHTML = `<p>Error loading books. Please try again later.</p>`;
+        });
 }
+
+function displayBooks(books) {
+    const booksContainer = document.getElementById('book-list');    
+    booksContainer.innerHTML = ''; // Clear previous books
+    if (!books || books.length === 0) {
+        booksContainer.innerHTML = '<p>No books found.</p>';
+        return;
+    }
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.className = 'book-item';
+        bookElement.innerHTML = `
+            <a href="${book.volumeInfo.infoLink}" target="_blank">
+                <h3>${book.volumeInfo.title}</h3>
+                <p>Author: ${book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown'}</p>
+                <img src="${book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x200'}" alt="${book.volumeInfo.title}">
+            </a>
+            <button class="favorite-btn" onclick="toggleFavorite('${book.id}', this)">
+                <span class="heart">♡</span>
+            </button>
+        `;
+        booksContainer.appendChild(bookElement);
+    });
+};
+
+
+// Clear saved search results (optional function you can call)
+function clearSavedSearch() {
+    localStorage.removeItem('lastBookSearch');
+    const booksContainer = document.getElementById('book-list');
+    booksContainer.innerHTML = '';
+}
+
+
+if (serchButton) {
+    serchButton.addEventListener('click', getBooks);
+};
+// End of fetch and display books from Google Books API
+
+
+// Add to favorite
+function toggleFavorite(bookId, buttonElement) {
+    const heart = buttonElement.querySelector('.heart');
+    const isFavorited = heart.classList.contains('favorited');
+    
+    if (isFavorited) {
+        // Remove from favorites
+        heart.classList.remove('favorited');
+        heart.innerHTML = '♡'; // Empty heart
+        removeFavorite(bookId);
+    } else {
+        // Add to favorites
+        heart.classList.add('favorited');
+        heart.innerHTML = '❤'; // Filled heart
+        addFavorite(bookId);
+    }
+};
+
+function addFavorite(bookId) {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    if (!favorites.includes(bookId)) {
+        favorites.push(bookId);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+}
+
+function removeFavorite(bookId) {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    favorites = favorites.filter(id => id !== bookId);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+function isFavorite(bookId) {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    return favorites.includes(bookId);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
