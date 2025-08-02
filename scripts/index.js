@@ -55,7 +55,7 @@ function displayQuotes(quotes) {
 
 // Fetch and display books from Google Books API
 
-const url = `https://www.googleapis.com/books/v1/volumes?`
+const url = `https://www.googleapis.com/books/v1/volumes`
 const serchButton = document.getElementById('search-button');
 
 // Load saved search results when page loads
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function getBooks() {
     const searchQuery = document.getElementById('search-input').value;
-    const urlWithQuery = `${url}q=${encodeURIComponent(searchQuery)}`;
+    const urlWithQuery = `${url}?q=${encodeURIComponent(searchQuery)}`;
 
     fetch(urlWithQuery)
         .then(response => {
@@ -110,14 +110,6 @@ function displayBooks(books) {
 };
 
 
-// Clear saved search results (optional function you can call)
-function clearSavedSearch() {
-    localStorage.removeItem('lastBookSearch');
-    const booksContainer = document.getElementById('book-list');
-    booksContainer.innerHTML = '';
-}
-
-
 if (serchButton) {
     serchButton.addEventListener('click', getBooks);
 };
@@ -160,6 +152,40 @@ function isFavorite(bookId) {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     return favorites.includes(bookId);
 }
+
+async function loadFavorite() {
+    const booksContainer = document.getElementById('book-list');
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    if (favorites.length === 0) {
+        booksContainer.innerHTML = '<p>No favorite books found.</p>';
+        return;
+    }
+
+    const allBooks = [];
+
+    for (let id of favorites) {
+        try {
+            const urlWithId = `${url}/${id}`;
+            const response = await fetch(urlWithId);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            allBooks.push(data);  
+        }
+        catch (error) {
+            console.error('Error fetching favorite book:', error);
+        }
+    }
+
+    displayBooks(allBooks);
+}
+
+window.addEventListener('load', loadFavorite);
+
+
+
 
 
 
