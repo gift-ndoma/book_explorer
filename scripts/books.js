@@ -1,5 +1,5 @@
-[
-  {
+const myBooks = [
+    {
     "title": "To Kill a Mockingbird",
     "author": "Harper Lee",
     "image": "http://books.google.com/books/content?id=LaMTiorjM9cC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
@@ -98,4 +98,39 @@
     "language": "Russian",
     "isbn": "9780140449136"
   }
-]
+];
+
+// Save the books to localStorage
+localStorage.setItem('books', JSON.stringify(myBooks));
+
+function displayBooks(books) {
+    const booksContainer = document.getElementById('book-list');    
+    booksContainer.innerHTML = ''; // Clear previous books
+
+    if (!books || books.length === 0) {
+        booksContainer.innerHTML = '<p>No books found.</p>';
+        return;
+    }
+
+    books.forEach(book => {
+        const bookElement = document.createElement('div');
+        bookElement.className = 'book-item';
+        bookElement.innerHTML = `
+            <div>
+                <h3>${book.title}</h3>
+                <p>Author: ${book.author}</p>
+                <img src="${book.image}" alt="${book.title}">
+            </div>
+            <button class="favorite-btn" onclick="toggleFavorite('${book.isbn}', this)">
+                <span class="heart">♡</span>
+            </button>
+        `;
+        booksContainer.appendChild(bookElement);
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const storedBooks = JSON.parse(localStorage.getItem('books')) || [];
+    displayBooks(storedBooks);
+});
